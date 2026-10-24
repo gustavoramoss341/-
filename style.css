@@ -1,0 +1,331 @@
+
+:root {
+    --fundo: #0b0a09;
+    --painel: #100e0c;
+    --bege: #c2b49b;
+    --bege-suave: #827865;
+    --borda: #393126;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+
+    color: var(--bege);
+    font-family: "Courier New", monospace;
+
+    background-color: #080706;
+    background-image:
+        radial-gradient(
+            circle 300px at var(--cursor-x, -1000px) var(--cursor-y, -1000px),
+            #c2b49b12 0%,
+            #c2b49b05 45%,
+            transparent 100%
+        );
+}
+
+/* A lanterna: abre uma região de luz na escuridão */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+
+    background: radial-gradient(
+        circle 210px at var(--cursor-x, -1000px) var(--cursor-y, -1000px),
+        transparent 0%,
+        #08070622 45%,
+        #080706b8 75%,
+        #080706f5 100%
+    );
+}
+
+/* Textura de monitor antigo */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 11;
+    pointer-events: none;
+
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        #00000035 4px
+    );
+
+    opacity: 0.35;
+}
+
+/* Cada região começa quase invisível */
+.revelavel {
+    --luz: 0;
+
+    opacity: calc(0.025 + var(--luz) * 0.975);
+    filter: brightness(calc(0.35 + var(--luz) * 0.65));
+
+    transition:
+        opacity 180ms linear,
+        filter 180ms linear;
+}
+
+/* O painel também fica apagado até ser encontrado */
+.painel-terminal {
+    position: fixed;
+    right: 26px;
+    bottom: 24px;
+    z-index: 3;
+
+    width: min(340px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+
+    padding: 22px 18px;
+    text-align: center;
+
+    background: #100e0cf2;
+    border: 1px solid #393126;
+    border-radius: 2px;
+
+    box-shadow: 0 0 24px #00000050;
+}
+
+/* Quando está perto, o painel fica acessível */
+.painel-terminal.revelado {
+    pointer-events: auto;
+}
+
+/* Evita que o brilho interfira com a interação */
+.texto-terminal,
+.coordenadas,
+.painel-terminal {
+    will-change: opacity, filter;
+}
+
+@media (max-width: 520px) {
+    .painel-terminal {
+        right: 12px;
+        bottom: 12px;
+        width: min(300px, calc(100vw - 24px));
+        padding: 18px 12px;
+    }
+
+    .texto-terminal {
+        top: 20px;
+        left: 16px;
+        right: 16px;
+    }
+
+    .coordenadas {
+        left: 16px;
+        bottom: 16px;
+    }
+}
+
+
+
+/* Texto no canto superior esquerdo */
+.texto-terminal {
+    position: fixed;
+    top: 32px;
+    left: 32px;
+    z-index: 2;
+
+    max-width: 420px;
+
+    color: var(--bege-suave);
+    font-size: 12px;
+    line-height: 1.8;
+    letter-spacing: 0.3px;
+
+    animation: aparecer 2s ease both;
+}
+
+.texto-terminal p {
+    margin: 3px 0;
+}
+
+.texto-terminal .linha-sistema {
+    margin-bottom: 15px;
+    color: var(--bege);
+    letter-spacing: 2px;
+}
+
+.linha-espera {
+    margin-top: 18px !important;
+}
+
+.cursor {
+    color: var(--bege);
+    animation: piscar 1s steps(2, start) infinite;
+}
+
+/* Coordenadas no canto inferior esquerdo */
+.coordenadas {
+    position: fixed;
+    left: 32px;
+    bottom: 28px;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    color: var(--bege-suave);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.coordenadas p {
+    margin: 0 0 5px;
+    color: var(--bege);
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+
+
+
+/* O painel aparece quando o cursor se aproxima */
+.painel-terminal.revelado {
+    opacity: 1;
+    transform: translateY(0);
+    border-color: #776b56;
+    box-shadow: 0 0 25px #00000090;
+    pointer-events: auto;
+}
+
+.status {
+    margin: 0 0 18px;
+    color: var(--bege-suave);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+h1 {
+    margin: 0 0 22px;
+
+    color: var(--bege);
+    font-size: clamp(22px, 4vw, 29px);
+    font-weight: normal;
+    letter-spacing: 3px;
+
+    text-shadow: 0 0 8px #c2b49b20;
+}
+
+.foto-principal {
+    display: block;
+    width: 100%;
+    max-width: 180px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+
+    margin: 0 auto 22px;
+    padding: 4px;
+
+    background: var(--painel);
+    border: 1px solid var(--borda);
+
+    filter: grayscale(100%) sepia(25%) brightness(0.78);
+
+    transition: filter 500ms ease;
+}
+
+.painel-terminal.revelado .foto-principal {
+    filter: grayscale(75%) sepia(20%) brightness(0.95);
+}
+
+.cronometro {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+
+    padding-top: 18px;
+    border-top: 1px solid var(--borda);
+}
+
+.cronometro div {
+    min-width: 0;
+    padding: 12px 2px;
+
+    background: #17130f;
+    border: 1px solid #2d261d;
+}
+
+.cronometro span {
+    display: block;
+    color: var(--bege);
+    font-size: clamp(19px, 3vw, 25px);
+    font-variant-numeric: tabular-nums;
+}
+
+.cronometro small {
+    display: block;
+    margin-top: 8px;
+
+    color: var(--bege-suave);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Animações */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes piscar {
+    to {
+        visibility: hidden;
+    }
+}
+
+/* Adaptação para celulares */
+@media (max-width: 520px) {
+    .texto-terminal {
+        top: 20px;
+        left: 16px;
+        right: 16px;
+        font-size: 11px;
+    }
+
+    .coordenadas {
+        left: 16px;
+        bottom: 16px;
+    }
+
+    .painel-terminal {
+        right: 12px;
+        bottom: 12px;
+        width: min(300px, calc(100vw - 24px));
+        padding: 18px 12px;
+    }
+}
+
+/* Respeita a preferência por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

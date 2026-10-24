@@ -1,0 +1,136 @@
+
+:root {
+    --fundo: #f4f3f0;
+    --branco: #ffffff;
+    --texto: #292929;
+    --texto-suave: #777777;
+    --borda: #deddd9;
+    --destaque: #343434;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 32px 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Título */
+h1 {
+    margin: 0 0 26px;
+
+    font-size: clamp(30px, 5vw, 42px);
+    font-weight: 500;
+    letter-spacing: -1.5px;
+    text-align: center;
+}
+
+/* Foto */
+.foto-principal {
+    display: block;
+
+    width: 100%;
+    max-width: 290px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+
+    margin: 0 auto 28px;
+
+    border-radius: 8px;
+}
+
+/* Formulário */
+form {
+    width: 100%;
+    max-width: 360px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+input {
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 15px;
+
+    color: var(--texto);
+    background: var(--branco);
+
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+
+    font-size: 15px;
+
+    transition: border-color 180ms ease;
+}
+
+input::placeholder {
+    color: #999999;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--destaque);
+}
+
+/* Botão */
+button {
+    width: 100%;
+    min-height: 52px;
+    padding: 14px;
+
+    color: var(--branco);
+    background: var(--destaque);
+
+    border: 1px solid var(--destaque);
+    border-radius: 6px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background 180ms ease;
+}
+
+button:hover {
+    background: #484848;
+}
+
+/* Mensagem */
+#mensagem {
+    width: 100%;
+    max-width: 360px;
+    min-height: 22px;
+
+    margin: 16px 0 0;
+
+    color: var(--texto-suave);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+    body {
+        padding: 24px 18px;
+    }
+
+    .foto-principal {
+        max-width: 260px;
+        margin-bottom: 24px;
+    }
+}
