@@ -1,9 +1,22 @@
-if(sessionStorage.getItem("liberado") !== "sim") {
-   location.replace("index.html");
+
+if (sessionStorage.getItem("liberado") !== "sim") {
+    location.replace("index.html");
 } else {
 
+    // Notifica a Cloudflare quando a página principal é aberta
+    fetch("https://wispy-sound-9e7b.josegustavoramossilva3.workers.dev/visita", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            pagina: "principal"
+        })
+    }).catch(erro => {
+        console.error("Não foi possível registrar a visita:", erro);
+    });
+
     const encontro = new Date("2026-10-29T19:00:00-03:00").getTime();
-  
 
     const segundo = 1000;
     const minuto = segundo * 60;
@@ -16,18 +29,17 @@ if(sessionStorage.getItem("liberado") !== "sim") {
     const elementoSegundos = document.getElementById("segundos");
 
     function atualizarcontagem() {
-
         const agora = Date.now();
         const diferenca = encontro - agora;
 
-        if(diferenca<=0) {
+        if (diferenca <= 0) {
             elementoDias.textContent = "00";
             elementoHoras.textContent = "00";
             elementoMinutos.textContent = "00";
             elementoSegundos.textContent = "00";
 
             clearInterval(intervalo);
-            return
+            return;
         }
 
         const dias = Math.floor(diferenca / dia);
@@ -45,8 +57,6 @@ if(sessionStorage.getItem("liberado") !== "sim") {
     atualizarcontagem();
     intervalo = setInterval(atualizarcontagem, 1000);
 
-
-    
     // Sistema de lanterna para a página inteira
     const elementos = document.querySelectorAll(".revelavel");
     const painel = document.querySelector(".painel-terminal");
@@ -54,83 +64,40 @@ if(sessionStorage.getItem("liberado") !== "sim") {
     const alcance = 260;
 
     function iluminar(x, y) {
-        // Atualiza a posição da luz no fundo da tela
-        document.documentElement.style.setProperty(
-            "--cursor-x",
-            `${x}px`
-        );
+        document.documentElement.style.setProperty("--cursor-x", `${x}px`);
+        document.documentElement.style.setProperty("--cursor-y", `${y}px`);
 
-        document.documentElement.style.setProperty(
-            "--cursor-y",
-            `${y}px`
-        );
-
-        // Calcula a iluminação de cada região
         elementos.forEach((elemento) => {
             const caixa = elemento.getBoundingClientRect();
 
-            // Ponto da caixa mais próximo do cursor
-            const pontoX = Math.max(
-                caixa.left,
-                Math.min(x, caixa.right)
-            );
+            const pontoX = Math.max(caixa.left, Math.min(x, caixa.right));
+            const pontoY = Math.max(caixa.top, Math.min(y, caixa.bottom));
 
-            const pontoY = Math.max(
-                caixa.top,
-                Math.min(y, caixa.bottom)
-            );
+            const distancia = Math.hypot(x - pontoX, y - pontoY);
 
-            const distancia = Math.hypot(
-                x - pontoX,
-                y - pontoY
-            );
+            let intensidade = Math.max(0, 1 - distancia / alcance);
+            intensidade = intensidade * intensidade * (3 - 2 * intensidade);
 
-            // Intensidade cai gradualmente com a distância
-            let intensidade = Math.max(
-                0,
-                1 - distancia / alcance
-            );
+            elemento.style.setProperty("--luz", intensidade.toFixed(3));
 
-            // Suaviza a transição da luz
-            intensidade =
-                intensidade * intensidade * (3 - 2 * intensidade);
-
-            elemento.style.setProperty(
-                "--luz",
-                intensidade.toFixed(3)
-            );
-
-            // O painel pode receber interação quando está iluminado
             if (elemento === painel) {
-                painel.classList.toggle(
-                    "revelado",
-                    intensidade > 0.08
-                );
+                painel.classList.toggle("revelado", intensidade > 0.08);
             }
         });
     }
 
-    // Mouse e caneta
     document.addEventListener("pointermove", (evento) => {
-        if (evento.pointerType === "touch") {
-            return;
-        }
-
+        if (evento.pointerType === "touch") return;
         iluminar(evento.clientX, evento.clientY);
     });
 
-    // Primeiro toque: posiciona a lanterna
     document.addEventListener("touchstart", (evento) => {
         const toque = evento.touches[0];
-
         iluminar(toque.clientX, toque.clientY);
     }, { passive: true });
 
-    // A lanterna acompanha o dedo durante o movimento
     document.addEventListener("touchmove", (evento) => {
         const toque = evento.touches[0];
-
         iluminar(toque.clientX, toque.clientY);
     }, { passive: true });
-
 }
