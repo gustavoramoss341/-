@@ -10,7 +10,8 @@ if (sessionStorage.getItem("liberado") !== "sim") {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            pagina: "principal"
+            pagina: "principal",
+            nome: nome
         })
     }).catch(erro => {
         console.error("Não foi possível registrar a visita:", erro);
