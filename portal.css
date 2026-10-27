@@ -37,6 +37,15 @@ h1 {
     text-align: center;
 }
 
+.minhadiv {
+    margin: 0 0 26px;
+
+    font-size: clamp(15px, 5vw, 17px);
+    font-weight: 200;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
 /* Foto */
 .foto-principal {
     display: block;
