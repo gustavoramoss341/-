@@ -2,7 +2,7 @@
 if (sessionStorage.getItem("liberado") !== "sim") {
     location.replace("index.html");
 } else {
-
+    const nome = sessionStorage.getItem("nomeVisitante") || "desconhecido"; 
     // Notifica a Cloudflare quando a página principal é aberta
     fetch("https://wispy-sound-9e7b.josegustavoramossilva3.workers.dev/visita", {
         method: "POST",

@@ -133,7 +133,7 @@
                 if (!resposta.ok) {
                     throw new Error("Não foi possível registrar a entrada.");
                 }
-
+                sessionStorage.setItem("nomeVisitante", nome);
                 window.location.href = "portal.html";
 
             } catch (erro) {
